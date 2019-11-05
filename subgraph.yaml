@@ -1,0 +1,47 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Contract
+    network: kovan
+    source:
+      address: "0xB36017F5aafDE1a9462959f0e53866433D373404"
+      abi: Contract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - Deposit
+        - RedeemUnderlying
+        - Borrow
+        - Repay
+        - LiquidationCall
+        - Swap
+        - FlashLoan
+        - ReserveUsedAsCollateralEnabled
+        - ReserveUsedAsCollateralDisabled
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed address,uint256,indexed uint16,uint256)
+          handler: handleDeposit
+        - event: RedeemUnderlying(indexed address,indexed address,uint256,uint256)
+          handler: handleRedeemUnderlying
+        - event: Borrow(indexed address,indexed address,uint256,indexed uint16,uint256)
+          handler: handleBorrow
+        - event: Repay(indexed address,indexed address,uint256,uint256)
+          handler: handleRepay
+        - event: LiquidationCall(indexed address,indexed address,uint256,indexed address,uint256)
+          handler: handleLiquidationCall
+        - event: Swap(indexed address,indexed address,uint256)
+          handler: handleSwap
+        - event: FlashLoan(indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleFlashLoan
+        - event: ReserveUsedAsCollateralEnabled(indexed address,indexed address)
+          handler: handleReserveUsedAsCollateralEnabled
+        - event: ReserveUsedAsCollateralDisabled(indexed address,indexed address)
+          handler: handleReserveUsedAsCollateralDisabled
+      file: ./src/mapping.ts
