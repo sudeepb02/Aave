@@ -11,7 +11,9 @@ import {
   ReserveUsedAsCollateralEnabled,
   ReserveUsedAsCollateralDisabled
 } from "../generated/Contract/Contract"
-import { ExampleEntity } from "../generated/schema"
+import { ExampleEntity,
+         FlashLoanSummary
+} from "../generated/schema"
 
 export function handleDeposit(event: Deposit): void {
   // Entities can be loaded from the store using a string ID; this ID
@@ -70,7 +72,17 @@ export function handleLiquidationCall(event: LiquidationCall): void {}
 
 export function handleSwap(event: Swap): void {}
 
-export function handleFlashLoan(event: FlashLoan): void {}
+export function handleFlashLoan(event: FlashLoan): void {
+
+  //Update Flash Loan summary 
+  let flashLoanSummary = FlashLoanSummary.load("1")
+  if (flashLoanSummary == null) {
+    flashLoanSummary = new FlashLoanSummary("1")
+    flashLoanSummary.count = BigInt.fromI32(0)
+  }
+  flashLoanSummary.count = flashLoanSummary.count.plus(BigInt.fromI32(1))
+  flashLoanSummary.save()
+}
 
 export function handleReserveUsedAsCollateralEnabled(
   event: ReserveUsedAsCollateralEnabled

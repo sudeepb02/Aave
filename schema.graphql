@@ -4,3 +4,8 @@ type ExampleEntity @entity {
   _reserve: Bytes! # address
   _user: Bytes! # address
 }
+
+type FlashLoanSummary @entity {
+  id: ID!
+  count: BigInt!
+}
