@@ -12,63 +12,134 @@ import {
   ReserveUsedAsCollateralDisabled
 } from "../generated/Contract/Contract"
 import { ExampleEntity,
-         FlashLoanSummary
+         FlashLoanSummary,
+         AaveSummary,
+         User
 } from "../generated/schema"
 
 export function handleDeposit(event: Deposit): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
+  //Load the global summary entity
+  let summary = AaveSummary.load("1")
+  if (summary == null) {
+    summary = new AaveSummary("1")
+    summary.totalUsers = BigInt.fromI32(0)
+    summary.depositCount = BigInt.fromI32(0)
+    summary.borrowCount = BigInt.fromI32(0)
+    summary.stableBorrowCount = BigInt.fromI32(0)
+    summary.variableBorrowCount = BigInt.fromI32(0)
+    summary.repayCount = BigInt.fromI32(0)
+    summary.liquidationCount = BigInt.fromI32(0)
+    summary.rebalanceCount = BigInt.fromI32(0)
+    summary.flashLoanCount = BigInt.fromI32(0)
   }
+  //Load user 
+  let user = User.load(event.transaction.from.toHexString())
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
+  //If user does not exist, create and increment user count
+  if (user == null) {
+    user = new User(event.transaction.from.toHexString())
+    summary.totalUsers.plus(BigInt.fromI32(1))
+  }
+  user.save()
+  summary.depositCount.plus(BigInt.fromI32(1))
+  summary.save()
 
-  // Entity fields can be set based on event parameters
-  entity._reserve = event.params._reserve
-  entity._user = event.params._user
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.addressesProvider(...)
-  // - contract.getReserveConfigurationData(...)
-  // - contract.getReserveData(...)
-  // - contract.getUserAccountData(...)
-  // - contract.getUserReserveData(...)
-  // - contract.getReserves(...)
 }
 
-export function handleRedeemUnderlying(event: RedeemUnderlying): void {}
+export function handleRedeemUnderlying(event: RedeemUnderlying): void {
+  
+}
 
-export function handleBorrow(event: Borrow): void {}
+export function handleBorrow(event: Borrow): void {
 
-export function handleRepay(event: Repay): void {}
+  //Load the global summary entity
+  let summary = AaveSummary.load("1")
+  if (summary == null) {
+    summary = new AaveSummary("1")
+    summary.totalUsers = BigInt.fromI32(0)
+    summary.depositCount = BigInt.fromI32(0)
+    summary.borrowCount = BigInt.fromI32(0)
+    summary.stableBorrowCount = BigInt.fromI32(0)
+    summary.variableBorrowCount = BigInt.fromI32(0)
+    summary.repayCount = BigInt.fromI32(0)
+    summary.liquidationCount = BigInt.fromI32(0)
+    summary.rebalanceCount = BigInt.fromI32(0)
+    summary.flashLoanCount = BigInt.fromI32(0)
+  }
+  //Load user 
+  let user = User.load(event.transaction.from.toHexString())
 
-export function handleLiquidationCall(event: LiquidationCall): void {}
+  //If user does not exist, create and increment user count
+  if (user == null) {
+    user = new User(event.transaction.from.toHexString())
+    summary.totalUsers.plus(BigInt.fromI32(1))
+  }
+  user.save()
+  //TO-DO - Get the params of borrow to distinguish between stable and variable
+  // rate loans
+  
+  summary.borrowCount.plus(BigInt.fromI32(1))
+  summary.save()
+
+}
+
+export function handleRepay(event: Repay): void {
+  //Load the global summary entity
+  let summary = AaveSummary.load("1")
+  if (summary == null) {
+    summary = new AaveSummary("1")
+    summary.totalUsers = BigInt.fromI32(0)
+    summary.depositCount = BigInt.fromI32(0)
+    summary.borrowCount = BigInt.fromI32(0)
+    summary.stableBorrowCount = BigInt.fromI32(0)
+    summary.variableBorrowCount = BigInt.fromI32(0)
+    summary.repayCount = BigInt.fromI32(0)
+    summary.liquidationCount = BigInt.fromI32(0)
+    summary.rebalanceCount = BigInt.fromI32(0)
+    summary.flashLoanCount = BigInt.fromI32(0)
+  }
+  //Load user 
+  let user = User.load(event.transaction.from.toHexString())
+
+  //If user does not exist, create and increment user count
+  if (user == null) {
+    user = new User(event.transaction.from.toHexString())
+    summary.totalUsers.plus(BigInt.fromI32(1))
+  }
+  user.save()
+  summary.repayCount.plus(BigInt.fromI32(1))
+  summary.save()
+}
+
+export function handleLiquidationCall(event: LiquidationCall): void {
+  //Load the global summary entity
+  let summary = AaveSummary.load("1")
+  if (summary == null) {
+    summary = new AaveSummary("1")
+    summary.totalUsers = BigInt.fromI32(0)
+    summary.depositCount = BigInt.fromI32(0)
+    summary.borrowCount = BigInt.fromI32(0)
+    summary.stableBorrowCount = BigInt.fromI32(0)
+    summary.variableBorrowCount = BigInt.fromI32(0)
+    summary.repayCount = BigInt.fromI32(0)
+    summary.liquidationCount = BigInt.fromI32(0)
+    summary.rebalanceCount = BigInt.fromI32(0)
+    summary.flashLoanCount = BigInt.fromI32(0)
+  }
+  //Load user 
+  let user = User.load(event.transaction.from.toHexString())
+
+  //If user does not exist, create and increment user count
+  if (user == null) {
+    user = new User(event.transaction.from.toHexString())
+    summary.totalUsers.plus(BigInt.fromI32(1))
+  }
+  user.save()
+
+  summary.repayCount.plus(BigInt.fromI32(1))
+  summary.save()
+}
 
 export function handleSwap(event: Swap): void {}
 
@@ -82,6 +153,33 @@ export function handleFlashLoan(event: FlashLoan): void {
   }
   flashLoanSummary.count = flashLoanSummary.count.plus(BigInt.fromI32(1))
   flashLoanSummary.save()
+
+  //Load the global summary entity
+  let summary = AaveSummary.load("1")
+  if (summary == null) {
+    summary = new AaveSummary("1")
+    summary.totalUsers = BigInt.fromI32(0)
+    summary.depositCount = BigInt.fromI32(0)
+    summary.borrowCount = BigInt.fromI32(0)
+    summary.stableBorrowCount = BigInt.fromI32(0)
+    summary.variableBorrowCount = BigInt.fromI32(0)
+    summary.repayCount = BigInt.fromI32(0)
+    summary.liquidationCount = BigInt.fromI32(0)
+    summary.rebalanceCount = BigInt.fromI32(0)
+    summary.flashLoanCount = BigInt.fromI32(0)
+  }
+  //Load user 
+  let user = User.load(event.transaction.from.toHexString())
+
+  //If user does not exist, create and increment user count
+  if (user == null) {
+    user = new User(event.transaction.from.toHexString())
+    summary.totalUsers.plus(BigInt.fromI32(1))
+  }
+  user.save()
+
+  summary.flashLoanCount.plus(BigInt.fromI32(1))
+  summary.save()
 }
 
 export function handleReserveUsedAsCollateralEnabled(

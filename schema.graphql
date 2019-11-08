@@ -9,3 +9,20 @@ type FlashLoanSummary @entity {
   id: ID!
   count: BigInt!
 }
+
+type AaveSummary @entity {
+  id: ID!
+  totalUsers: BigInt!
+  depositCount: BigInt!
+  borrowCount: BigInt!
+  stableBorrowCount: BigInt!
+  variableBorrowCount: BigInt!
+  repayCount: BigInt!
+  liquidationCount: BigInt!
+  rebalanceCount: BigInt!
+  flashLoanCount: BigInt!
+}
+
+type User @entity {
+  id: ID!
+}
